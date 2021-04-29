@@ -70,6 +70,4 @@ public class TestConfig implements CommandLineRunner{
 		
 		productRepository.saveAll(Arrays.asList(p1,p2,p3,p4));
 	}
-	
-	
 }
