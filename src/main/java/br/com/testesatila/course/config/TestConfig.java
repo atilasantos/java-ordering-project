@@ -10,14 +10,16 @@ import org.springframework.context.annotation.Profile;
 
 import br.com.testesatila.course.entities.Category;
 import br.com.testesatila.course.entities.Order;
+import br.com.testesatila.course.entities.OrderItem;
+import br.com.testesatila.course.entities.Payment;
 import br.com.testesatila.course.entities.Product;
 import br.com.testesatila.course.entities.User;
 import br.com.testesatila.course.entities.enums.OrderStatus;
 import br.com.testesatila.course.repositories.CategoryRepository;
+import br.com.testesatila.course.repositories.OrderItemRepository;
 import br.com.testesatila.course.repositories.OrderRepository;
 import br.com.testesatila.course.repositories.ProductRepository;
 import br.com.testesatila.course.repositories.UserRepository;
-import br.com.testesatila.course.services.CategoryService;
 
 @Configuration
 @Profile("test")
@@ -34,6 +36,9 @@ public class TestConfig implements CommandLineRunner{
 	
 	@Autowired
 	ProductRepository productRepository;
+	
+	@Autowired
+	OrderItemRepository orderItemRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -63,11 +68,36 @@ public class TestConfig implements CommandLineRunner{
 		categoryRepository.saveAll(Arrays.asList(c1,c2,c3,c4,c5));
 		
 		
-		Product p1 = new Product(null,"Billabong t-shirt", "Long sheeve t-shirt", 90.,"http://img.url",c1);
-		Product p2 = new Product(null,"Football ball", "WorldCup ball", 500.,"http://img.url",c2);
-		Product p3 = new Product(null,"Tobirama figure action", "Tobirama", 90.,"http://img.url",c5);
-		Product p4 = new Product(null,"Iphone", "Pro Max 12 512gb", 999.,"http://img.url",c4);
+		Product p1 = new Product(null,"Billabong t-shirt", "Long sheeve t-shirt", 90.,"http://img.url");
+		Product p2 = new Product(null,"Football ball", "WorldCup ball", 500.,"http://img.url");
+		Product p3 = new Product(null,"Tobirama figure action", "Tobirama", 90.,"http://img.url");
+		Product p4 = new Product(null,"Iphone", "Pro Max 12 512gb", 999.,"http://img.url");
+		
+		p1.getCategories().add(c5);
+		p1.getCategories().add(c3);
+		p2.getCategories().add(c2);
+		p3.getCategories().add(c4);
+		p4.getCategories().add(c1);
+		p4.getCategories().add(c2);
 		
 		productRepository.saveAll(Arrays.asList(p1,p2,p3,p4));
+		
+		OrderItem oi1 = new OrderItem(o1, p2, 2, p2.getPrice());
+		OrderItem oi2 = new OrderItem(o1, p1, 1, p1.getPrice());
+		OrderItem oi3 = new OrderItem(o2, p1, 4, p1.getPrice());
+		OrderItem oi4 = new OrderItem(o2, p4, 2, p4.getPrice());
+		OrderItem oi5 = new OrderItem(o2, p2, 5, p2.getPrice());
+		OrderItem oi6 = new OrderItem(o3, p4, 1, p4.getPrice());
+		OrderItem oi7 = new OrderItem(o3, p1, 2, p1.getPrice());
+		OrderItem oi8 = new OrderItem(o4, p2, 6, p2.getPrice());
+		OrderItem oi9 = new OrderItem(o5, p3, 5, p3.getPrice());
+		OrderItem oi10 = new OrderItem(o6, p3, 8, p3.getPrice());
+		OrderItem oi11 = new OrderItem(o7, p4, 3, p4.getPrice());
+		
+		orderItemRepository.saveAll(Arrays.asList(oi1,oi2,oi3,oi4,oi5,oi6,oi7,oi8,oi9,oi10,oi11));
+		
+		Payment pay1 = new Payment(null, Instant.parse("2019-06-20T21:53:07Z"), o3);
+		o3.setPayment(pay1);
+		orderRepository.save(o3);
 	}
 }
